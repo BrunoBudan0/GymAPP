@@ -1,68 +1,120 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import firebase from '../config/config'; 
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import firebase from '../config/config';
 
-export default function HomeScreen() {
-  const navigation = useNavigation();
+export default class HomeScreen extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      nome: '',
+      email: ''
+    };
+  }
 
-  const handleLogout = () => {
-    const auth = getAuth(firebase); 
-    
-    console.log('🚪 Fazendo logout...');
-    
-    signOut(auth)
-      .then(() => {
-        console.log('✅ Logout realizado com sucesso');
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'Auth' }],
-        });
-      })
-      .catch((error) => {
-        console.error('❌ Erro ao fazer logout:', error);
+  componentDidMount() {
+    const user = firebase.auth().currentUser;
+    if (user) {
+      firebase.database().ref('usuarios/' + user.uid).once('value').then(snapshot => {
+        const nome = snapshot.val()?.nome || '';
+        this.setState({ nome });
       });
-  };
+    }
+  }
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Bem-vindo ao App de Treinos!</Text>
-      <Text style={styles.subtitle}>Dashboard em construção...</Text>
+  render() {
+    return (
+      <ScrollView style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.nomeUsuario}>{this.state.nome}</Text>
+        </View>
 
-      <TouchableOpacity style={styles.button} onPress={handleLogout}>
-        <Text style={styles.buttonText}>Sair</Text>
-      </TouchableOpacity>
-    </View>
-  );
+        {/* Grid principal */}
+        <View style={styles.gridContainer}>
+          <TouchableOpacity style={[styles.bloco, styles.blocoTreino]}>
+            <Text style={styles.textoBloco}>Treino</Text>
+          </TouchableOpacity>
+
+          {/* Blocos em duas colunas */}
+          <View style={styles.linhaInferior}>
+            <TouchableOpacity style={[styles.bloco, styles.blocoHidratacao]}>
+              <Text style={styles.textoBloco}>Hidratação</Text>
+            </TouchableOpacity>
+
+            {/* Coluna da direita */}
+            <View style={styles.colunaDireita}>
+              <TouchableOpacity style={[styles.bloco, styles.blocoAlimentacao]}>
+                <Text style={styles.textoBloco}>Alimentação</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={[styles.bloco, styles.blocoProgresso]}>
+                <Text style={styles.textoBloco}>Progresso</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </ScrollView>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#fff'
+    backgroundColor: '#ffffff',
+    paddingHorizontal: 20,
   },
-  title: {
+  header: {
+    marginTop: 50,
+    marginBottom: 30,
+  },
+  nomeUsuario: {
+    color: '#fff',
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 10
   },
-  subtitle: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 30
+  gridContainer: {
+    flex: 1,
   },
-  button: {
-    backgroundColor: '#FF3B30',
-    padding: 15,
-    borderRadius: 8,
-    marginTop: 20
+  linhaInferior: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
-  buttonText: {
+  colunaDireita: {
+    width: '47%',
+    justifyContent: 'space-between',
+  },
+  bloco: {
+    borderRadius: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.3,
+    shadowOffset: { width: 2, height: 4 },
+    elevation: 5,
+    marginBottom: 15,
+  },
+  textoBloco: {
     color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold'
-  }
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  blocoTreino: {
+    backgroundColor: '#1E90FF',
+    width: '100%',
+    height: 130,
+    marginBottom: 15,
+  },
+  blocoHidratacao: {
+    backgroundColor: '#00CED1',
+    width: '47%',
+    height: 280, // ocupa o espaço de dois blocos
+  },
+  blocoAlimentacao: {
+    backgroundColor: '#32CD32',
+    height: 130,
+  },
+  blocoProgresso: {
+    backgroundColor: '#FF6347',
+    height: 130,
+  },
 });
