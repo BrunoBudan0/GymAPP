@@ -20,7 +20,8 @@
     "@react-navigation/native": "*",
     "react-native-gesture-handler": "~2.28.0",
     "@react-navigation/bottom-tabs": "*",
-    "react-native-safe-area-context": "~5.6.0"
+    "react-native-safe-area-context": "~5.6.0",
+    "@react-native-async-storage/async-storage": "2.2.0"
   },
   "private": true
 }
