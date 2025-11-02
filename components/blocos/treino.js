@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, TextInput, Modal, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function TreinosScreen() {
+export default function TreinosScreen({ navigation }) {
   const [treinos, setTreinos] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [novoTreino, setNovoTreino] = useState('');
@@ -53,6 +53,7 @@ export default function TreinosScreen() {
   };
 
   const excluirTreino = (index) => {
+    // Essa função só vai funcionar no celular, no ambiente web não
     Alert.alert('Excluir treino', 'Deseja realmente excluir este treino?', [
       { text: 'Cancelar' },
       {
@@ -73,6 +74,14 @@ export default function TreinosScreen() {
     setModalVisible(true);
   };
 
+  const iniciarTreino = (index) => {
+  navigation.navigate('iniciarTreino', {
+    treinoIndex: index,
+    treinoNome: treinos[index].nome
+  });
+  
+};
+
   return (
     <View style={styles.container}>
       <Text style={styles.titulo}>Meus Treinos</Text>
@@ -82,9 +91,12 @@ export default function TreinosScreen() {
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item, index }) => (
           <View style={styles.treinoItem}>
-            <Text style={styles.nomeTreino}>{item.nome}</Text>
+            <Text style={styles.nomeTreino} onPress={() => navigation.navigate('execucaoTreino', {treinoIndex: index, treinoNome: item.nome})}>{item.nome}</Text>
 
             <View style={styles.acoes}>
+            <TouchableOpacity onPress={() => iniciarTreino(index)}>
+                <Text style={styles.botaoIniciar}>Iniciar</Text>
+              </TouchableOpacity>
               <TouchableOpacity onPress={() => editarTreino(index)}>
                 <Text style={styles.botaoEditar}>Editar</Text>
               </TouchableOpacity>
@@ -150,6 +162,7 @@ const styles = StyleSheet.create({
   },
   nomeTreino: { color: '#fff', fontSize: 18 },
   acoes: { flexDirection: 'row' },
+  botaoIniciar: {color: '#32CD32', marginRight: 15},
   botaoEditar: { color: '#1E90FF', marginRight: 15 },
   botaoExcluir: { color: '#FF6347' },
   botaoAdicionar: {

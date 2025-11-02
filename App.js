@@ -8,6 +8,9 @@ import LoginScreen from './components/login';
 import CadastroScreen from './components/cadastro';
 import HomeScreen from './components/home';
 import TreinosScreen from './components/blocos/treino';
+import ExecucaoTreinoScreen from './components/blocos/execucaoTreino';
+import IniciarTreinoScreen from './components/blocos/iniciarTreino';
+
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -21,13 +24,22 @@ function AuthStack() {
     </Stack.Navigator>
   );
 }
-
+// Stack para Treinos (para poder navegar para execução)
+function TreinosStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="ListaTreinos" component={TreinosScreen} />
+      <Stack.Screen name="execucaoTreino" component={ExecucaoTreinoScreen} />
+      <Stack.Screen name="iniciarTreino" component={IniciarTreinoScreen} />
+    </Stack.Navigator>
+  );
+}
 // Tabs principais do app (quando logado)
 function MainTabs() {
   return (
     <Tab.Navigator screenOptions={{ headerShown: false }} /*Oculta a parte de cima*/>
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Treino" component={TreinosScreen} />
+      <Tab.Screen name="Treino" component={TreinosStack} />
     </Tab.Navigator>
   );
 }
