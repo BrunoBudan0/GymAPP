@@ -7,6 +7,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import LoginScreen from './components/login';
 import CadastroScreen from './components/cadastro';
 import HomeScreen from './components/home';
+import TreinosScreen from './components/blocos/treino';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -24,9 +25,9 @@ function AuthStack() {
 // Tabs principais do app (quando logado)
 function MainTabs() {
   return (
-    <Tab.Navigator>
+    <Tab.Navigator screenOptions={{ headerShown: false }} /*Oculta a parte de cima*/>
       <Tab.Screen name="Home" component={HomeScreen} />
-      {/* Adicione outras tabs aqui: Treinos, Hidratação, Alimentação */}
+      <Tab.Screen name="Treino" component={TreinosScreen} />
     </Tab.Navigator>
   );
 }
@@ -35,11 +36,12 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {/* Auth Stack - Login e Cadastro */}
-        <Stack.Screen name="Auth" component={AuthStack} />
-        
+        {/*Mudar depois para a auth para cima!!!*/} 
         {/* Main App - Após login */}
         <Stack.Screen name="Main" component={MainTabs} />
+        <Stack.Screen name="Treino" component={MainTabs} />
+        {/* Auth Stack - Login e Cadastro */}
+        <Stack.Screen name="Auth" component={AuthStack} />
       </Stack.Navigator>
     </NavigationContainer>
   );
