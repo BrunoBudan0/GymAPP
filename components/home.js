@@ -30,13 +30,13 @@ export default class HomeScreen extends React.Component {
 
         {/* Grid principal */}
         <View style={styles.gridContainer}>
-          <TouchableOpacity style={[styles.bloco, styles.blocoTreino]}>
+          <TouchableOpacity style={[styles.bloco, styles.blocoTreino]} onPress={()=> this.props.navigation.navigate('Treino')}>
             <Text style={styles.textoBloco}>Treino</Text>
           </TouchableOpacity>
 
           {/* Blocos em duas colunas */}
           <View style={styles.linhaInferior}>
-            <TouchableOpacity style={[styles.bloco, styles.blocoHidratacao]}>
+            <TouchableOpacity style={[styles.bloco, styles.blocoHidratacao]} onPress={()=> this.props.navigation.navigate('Treino')}>
               <Text style={styles.textoBloco}>Hidratação</Text>
             </TouchableOpacity>
 
