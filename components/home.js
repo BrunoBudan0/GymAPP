@@ -36,7 +36,7 @@ export default class HomeScreen extends React.Component {
 
           {/* Blocos em duas colunas */}
           <View style={styles.linhaInferior}>
-            <TouchableOpacity style={[styles.bloco, styles.blocoHidratacao]} onPress={()=> this.props.navigation.navigate('Treino')}>
+            <TouchableOpacity style={[styles.bloco, styles.blocoHidratacao]} onPress={()=> this.props.navigation.navigate('Hidratacao')}>
               <Text style={styles.textoBloco}>Hidratação</Text>
             </TouchableOpacity>
 

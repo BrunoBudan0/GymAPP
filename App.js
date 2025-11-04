@@ -10,6 +10,7 @@ import HomeScreen from './components/home';
 import TreinosScreen from './components/blocos/treino';
 import ExecucaoTreinoScreen from './components/blocos/execucaoTreino';
 import IniciarTreinoScreen from './components/blocos/iniciarTreino';
+import HidratacaoScreen from './components/blocos/hidratacao';
 
 
 const Stack = createStackNavigator();
@@ -40,6 +41,7 @@ function MainTabs() {
     <Tab.Navigator screenOptions={{ headerShown: false }} /*Oculta a parte de cima*/>
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Treino" component={TreinosStack} />
+      <Tab.Screen name="Hidratacao" component={HidratacaoScreen} />
     </Tab.Navigator>
   );
 }
@@ -52,6 +54,7 @@ export default function App() {
         {/* Main App - Após login */}
         <Stack.Screen name="Main" component={MainTabs} />
         <Stack.Screen name="Treino" component={MainTabs} />
+        <Stack.Screen name="Hidratacao" component={MainTabs} />
         {/* Auth Stack - Login e Cadastro */}
         <Stack.Screen name="Auth" component={AuthStack} />
       </Stack.Navigator>
