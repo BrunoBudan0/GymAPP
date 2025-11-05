@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Modal, TextInput, Alert } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Modal, TextInput, Alert, ImageBackground } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { FontAwesome5 } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 
 export default function AlimentacaoScreen() {
   const [refeicoes, setRefeicoes] = useState([]);
@@ -47,7 +47,7 @@ export default function AlimentacaoScreen() {
 
     let listaAtualizada;
     if (editando !== null) {
-      listaAtualizada = refeicoes.map((r, i) => i === editando ? nova : r);
+      listaAtualizada = refeicoes.map((r, i) => (i === editando ? nova : r));
       setEditando(null);
     } else {
       listaAtualizada = [...refeicoes, nova];
@@ -62,10 +62,13 @@ export default function AlimentacaoScreen() {
   const excluirRefeicao = (index) => {
     Alert.alert('Excluir', 'Deseja remover esta refeição?', [
       { text: 'Cancelar' },
-      { text: 'Excluir', onPress: () => {
-        const novaLista = refeicoes.filter((_, i) => i !== index);
-        salvarRefeicoes(novaLista);
-      }}
+      {
+        text: 'Excluir',
+        onPress: () => {
+          const novaLista = refeicoes.filter((_, i) => i !== index);
+          salvarRefeicoes(novaLista);
+        },
+      },
     ]);
   };
 
@@ -78,107 +81,142 @@ export default function AlimentacaoScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <FontAwesome5 name="utensils" size={36} color="#32CD32" />
-        <Text style={styles.titulo}>Alimentação</Text>
-      </View>
+    <ImageBackground
+      source={require('../../assets/alimentacao3.jpeg')} 
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <View style={styles.overlay} />
 
-      <FlatList
-        data={refeicoes}
-        keyExtractor={(_, index) => index.toString()}
-        renderItem={({ item, index }) => (
-          <View style={styles.card}>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.nome}>{item.nome}</Text>
-              <Text style={styles.itens}>{item.itens}</Text>
-              <Text style={styles.hora}>{item.hora}</Text>
-            </View>
-            <View>
-              <TouchableOpacity onPress={() => editarRefeicao(index)}>
-                <Text style={styles.botaoEditar}>Editar</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => excluirRefeicao(index)}>
-                <Text style={styles.botaoExcluir}>Excluir</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        )}
-      />
-
-      <TouchableOpacity style={styles.botaoAdicionar} onPress={() => setModalVisible(true)}>
-        <Text style={styles.textoBotao}>+ Registrar refeição</Text>
-      </TouchableOpacity>
-
-      <Modal visible={modalVisible} transparent animationType="slide">
-        <View style={styles.modalContainer}>
-          <View style={styles.modalConteudo}>
-            <Text style={styles.modalTitulo}>{editando !== null ? 'Editar Refeição' : 'Nova Refeição'}</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Nome da refeição (ex: Almoço)"
-              placeholderTextColor="#555"
-              value={nome}
-              onChangeText={setNome}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Alimentos (ex: arroz, frango, salada)"
-              placeholderTextColor="#555"
-              value={itens}
-              onChangeText={setItens}
-            />
-            <TouchableOpacity style={styles.botaoSalvar} onPress={adicionarRefeicao}>
-              <Text style={styles.textoSalvar}>Salvar</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.botaoCancelar} onPress={() => setModalVisible(false)}>
-              <Text style={styles.textoCancelar}>Cancelar</Text>
-            </TouchableOpacity>
-          </View>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Feather name="coffee" size={28} color="#A8E063" />
+          <Text style={styles.titulo}>Alimentação</Text>
         </View>
-      </Modal>
-    </View>
+
+        <FlatList
+          data={refeicoes}
+          keyExtractor={(_, index) => index.toString()}
+          renderItem={({ item, index }) => (
+            <View style={styles.card}>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.nome}>{item.nome}</Text>
+                <Text style={styles.itens}>{item.itens}</Text>
+                <Text style={styles.hora}>{item.hora}</Text>
+              </View>
+              <View style={styles.cardBt}>
+                <TouchableOpacity onPress={() => editarRefeicao(index)}>
+                  <Feather name="edit-2" size={18} color="#C3FFB0" style={{ marginVertical: 5 }} />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => excluirRefeicao(index)}>
+                  <Feather name="trash-2" size={18} color="#FFB6B6" />
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
+        />
+
+        <TouchableOpacity style={styles.botaoAdicionar} onPress={() => setModalVisible(true)}>
+          <Feather name="plus-circle" size={22} color="#fff" />
+          <Text style={styles.textoBotao}>Registrar refeição</Text>
+        </TouchableOpacity>
+
+        <Modal visible={modalVisible} transparent animationType="slide">
+          <View style={styles.modalContainer}>
+            <View style={styles.modalConteudo}>
+              <Text style={styles.modalTitulo}>
+                {editando !== null ? 'Editar Refeição' : 'Nova Refeição'}
+              </Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Nome da refeição (ex: Almoço)"
+                placeholderTextColor="#ccc"
+                value={nome}
+                onChangeText={setNome}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Alimentos (ex: arroz, frango, salada)"
+                placeholderTextColor="#ccc"
+                value={itens}
+                onChangeText={setItens}
+              />
+              <TouchableOpacity style={styles.botaoSalvar} onPress={adicionarRefeicao}>
+                <Text style={styles.textoSalvar}>Salvar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.botaoCancelar} onPress={() => setModalVisible(false)}>
+                <Text style={styles.textoCancelar}>Cancelar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+      </View>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff', padding: 20 },
-  header: { flexDirection: 'row', alignItems: 'center', marginBottom: 20 },
-  titulo: { color: '#000', fontSize: 26, fontWeight: 'bold', marginLeft: 10 },
+  background: { 
+      flex: 1,
+      width: '100%',
+      height: '100%',
+    },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 20, 0, 0.4)',
+  },
+  container: { 
+      flex: 1, 
+      paddingHorizontal: 20,
+      paddingVertical: 45, 
+      justifyContent: 'space-between' 
+    },
+  header: { flexDirection: 'row', alignItems: 'center', marginBottom: 15 },
+  titulo: { color: '#E9FFD9', fontSize: 26, fontWeight: 'bold', marginLeft: 10 },
   card: {
-    backgroundColor: '#f5f5f5',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderColor: 'rgba(255,255,255,0.2)',
+    borderWidth: 1,
+    borderRadius: 15,
     padding: 15,
-    borderRadius: 10,
     marginBottom: 10,
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
-  nome: { color: '#000', fontSize: 18, fontWeight: 'bold' },
-  itens: { color: '#333', fontSize: 14, marginTop: 5 },
-  hora: { color: '#777', fontSize: 12, marginTop: 3 },
-  botaoEditar: { color: '#1E90FF', marginTop: 5 },
-  botaoExcluir: { color: '#FF6347', marginTop: 5 },
+  cardBt: {
+    justifyContent: 'space-between',
+  },
+  nome: { color: '#E4FFE4', fontSize: 18, fontWeight: 'bold' },
+  itens: { color: '#C6EBC5', fontSize: 14, marginTop: 5 },
+  hora: { color: '#A8E063', fontSize: 12, marginTop: 3 },
   botaoAdicionar: {
-    backgroundColor: '#32CD32',
+    flexDirection: 'row',
+    backgroundColor: 'rgba(50,205,50,0.8)',
     padding: 15,
-    borderRadius: 10,
+    marginBottom: '40',
+    borderRadius: 12,
     alignItems: 'center',
-    marginTop: 20,
+    justifyContent: 'center',
+    gap: 8,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 4,
   },
-  textoBotao: { color: '#fff', fontWeight: 'bold', fontSize: 18 },
+  textoBotao: { color: '#fff', fontWeight: 'bold', fontSize: 17 },
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.4)',
+    backgroundColor: 'rgba(0,0,0,0.5)',
   },
   modalConteudo: {
-    backgroundColor: '#fff',
+    backgroundColor: 'rgba(255,255,255,0.95)',
     width: '85%',
     padding: 20,
     borderRadius: 15,
   },
-  modalTitulo: { color: '#000', fontSize: 20, marginBottom: 15 },
+  modalTitulo: { color: '#006400', fontSize: 20, marginBottom: 15, fontWeight: 'bold' },
   input: {
     backgroundColor: '#f2f2f2',
     color: '#000',
@@ -196,5 +234,5 @@ const styles = StyleSheet.create({
   },
   textoSalvar: { color: '#fff', fontWeight: 'bold' },
   botaoCancelar: { alignItems: 'center' },
-  textoCancelar: { color: '#777' },
+  textoCancelar: { color: '#555' },
 });

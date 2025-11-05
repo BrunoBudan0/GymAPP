@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal, TextInput, Alert } from 'react-native';
-import { FontAwesome5 } from '@expo/vector-icons'; 
+import {View, Text, StyleSheet, TouchableOpacity, Modal, TextInput, Alert, ImageBackground} from 'react-native';
+import { Feather } from '@expo/vector-icons';
 import firebase from '../../config/config';
 
 export default function PerfilScreen({ navigation }) {
@@ -40,7 +40,7 @@ export default function PerfilScreen({ navigation }) {
       setModalEditar(false);
     } catch (error) {
       console.log(error);
-      Alert.alert('Erro', 'Não foi possível atualizar suas informações. Tente novamente.');
+      Alert.alert('Erro', 'Não foi possível atualizar suas informações.');
     }
   };
 
@@ -70,10 +70,7 @@ export default function PerfilScreen({ navigation }) {
     } catch (error) {
       console.log(error);
       if (error.code === 'auth/requires-recent-login') {
-        Alert.alert(
-          'Sessão expirada',
-          'Por segurança, faça login novamente para alterar sua senha.'
-        );
+        Alert.alert('Sessão expirada', 'Faça login novamente para alterar a senha.');
         navigation.replace('Login');
       } else {
         Alert.alert('Erro', 'Não foi possível alterar a senha.');
@@ -82,7 +79,7 @@ export default function PerfilScreen({ navigation }) {
   };
 
   const logout = () => {
-    Alert.alert('Sair', 'Deseja realmente sair da conta?', [
+    Alert.alert('Sair', 'Deseja realmente sair?', [
       { text: 'Cancelar' },
       {
         text: 'Sair',
@@ -96,45 +93,57 @@ export default function PerfilScreen({ navigation }) {
 
   if (!usuario) {
     return (
-      <View style={styles.container}>
+      <View style={styles.loadingContainer}>
         <Text style={styles.loadingText}>Carregando informações...</Text>
       </View>
     );
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <FontAwesome5 name="user-circle" size={36} color="#007AFF" />
-        <Text style={styles.titulo}>Perfil</Text>
+    <ImageBackground
+      source={require('../../assets/background.jpeg')} // mesmo fundo da Home
+      style={styles.background}
+      blurRadius={1}
+      resizeMode="cover"
+    >
+      <View style={styles.overlay} />
+
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Feather name="user" size={28} color="#B0EFFF" />
+          <Text style={styles.titulo}>Perfil</Text>
+        </View>
+
+        <View style={styles.infoBox}>
+          <Text style={styles.label}>Nome</Text>
+          <Text style={styles.valor}>{usuario.nome || '—'}</Text>
+
+          <Text style={styles.label}>Email</Text>
+          <Text style={styles.valor}>{usuario.email}</Text>
+        </View>
+
+        <TouchableOpacity
+          style={styles.botaoEditar}
+          onPress={() => {
+            setNovoNome(usuario.nome);
+            setNovoEmail(usuario.email);
+            setModalEditar(true);
+          }}
+        >
+          <Feather name="edit-3" size={18} color="#fff" />
+          <Text style={styles.textoBotao}>Editar informações</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.botaoSenha} onPress={() => setModalSenha(true)}>
+          <Feather name="lock" size={18} color="#fff" />
+          <Text style={styles.textoBotao}>Alterar senha</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.botaoLogout} onPress={logout}>
+          <Feather name="log-out" size={18} color="#FF9A9A" />
+          <Text style={styles.textoLogout}>Sair da conta</Text>
+        </TouchableOpacity>
       </View>
-
-      <View style={styles.infoBox}>
-        <Text style={styles.label}>Nome</Text>
-        <Text style={styles.valor}>{usuario.nome || '—'}</Text>
-
-        <Text style={styles.label}>Email</Text>
-        <Text style={styles.valor}>{usuario.email}</Text>
-      </View>
-
-      <TouchableOpacity
-        style={styles.botaoEditar}
-        onPress={() => {
-          setNovoNome(usuario.nome);
-          setNovoEmail(usuario.email);
-          setModalEditar(true);
-        }}
-      >
-        <Text style={styles.textoBotao}>Editar informações</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.botaoSenha} onPress={() => setModalSenha(true)}>
-        <Text style={styles.textoBotao}>Alterar senha</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.botaoLogout} onPress={logout}>
-        <Text style={styles.textoLogout}>Sair da conta</Text>
-      </TouchableOpacity>
 
       {/* MODAL EDITAR PERFIL */}
       <Modal visible={modalEditar} transparent animationType="slide">
@@ -142,31 +151,27 @@ export default function PerfilScreen({ navigation }) {
           <View style={styles.modalConteudo}>
             <Text style={styles.modalTitulo}>Editar Perfil</Text>
 
-            <Text style={styles.campoLabel}>Nome</Text>
             <TextInput
               style={styles.input}
+              placeholder="Nome"
+              placeholderTextColor="#777"
               value={novoNome}
               onChangeText={setNovoNome}
-              placeholder="Seu nome"
-              placeholderTextColor="#777"
             />
-
-            <Text style={styles.campoLabel}>Email</Text>
             <TextInput
               style={styles.input}
+              placeholder="Email"
+              placeholderTextColor="#777"
               value={novoEmail}
               onChangeText={setNovoEmail}
-              placeholder="Seu email"
-              placeholderTextColor="#777"
               keyboardType="email-address"
-              autoCapitalize="none"
             />
 
             <TouchableOpacity style={styles.botaoSalvar} onPress={salvarAlteracoes}>
               <Text style={styles.textoSalvar}>Salvar</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => setModalEditar(false)} style={styles.botaoCancelar}>
+            <TouchableOpacity style={styles.botaoCancelar} onPress={() => setModalEditar(false)}>
               <Text style={styles.textoCancelar}>Cancelar</Text>
             </TouchableOpacity>
           </View>
@@ -179,88 +184,124 @@ export default function PerfilScreen({ navigation }) {
           <View style={styles.modalConteudo}>
             <Text style={styles.modalTitulo}>Alterar Senha</Text>
 
-            <Text style={styles.campoLabel}>Nova senha</Text>
             <TextInput
               style={styles.input}
-              value={novaSenha}
-              onChangeText={setNovaSenha}
               placeholder="Nova senha"
               placeholderTextColor="#777"
               secureTextEntry
+              value={novaSenha}
+              onChangeText={setNovaSenha}
             />
-
-            <Text style={styles.campoLabel}>Confirmar nova senha</Text>
             <TextInput
               style={styles.input}
-              value={confirmarSenha}
-              onChangeText={setConfirmarSenha}
               placeholder="Confirmar senha"
               placeholderTextColor="#777"
               secureTextEntry
+              value={confirmarSenha}
+              onChangeText={setConfirmarSenha}
             />
 
             <TouchableOpacity style={styles.botaoSalvar} onPress={alterarSenha}>
               <Text style={styles.textoSalvar}>Salvar nova senha</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => setModalSenha(false)} style={styles.botaoCancelar}>
+            <TouchableOpacity style={styles.botaoCancelar} onPress={() => setModalSenha(false)}>
               <Text style={styles.textoCancelar}>Cancelar</Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
-    </View>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff', padding: 20 },
-  header: { flexDirection: 'row', alignItems: 'center', marginBottom: 20 },
-  titulo: { color: '#000', fontSize: 26, fontWeight: 'bold', marginLeft: 10 },
-  infoBox: {
-    backgroundColor: '#f5f5f5',
-    padding: 20,
-    borderRadius: 12,
+  background: { 
+    flex: 1,
+    width: '100%',
+    height: '100%', 
+    },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 40, 60, 0.45)',
+  },
+  container: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingVertical: 40,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'flex-start',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 25,
   },
-  label: { color: '#888', fontSize: 14, marginBottom: 5 },
-  valor: { color: '#000', fontSize: 18, fontWeight: '600', marginBottom: 15 },
+  titulo: {
+    color: '#E3F8FF',
+    fontSize: 26,
+    fontWeight: 'bold',
+    marginLeft: 10,
+  },
+  infoBox: {
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderColor: 'rgba(255,255,255,0.2)',
+    borderWidth: 1,
+    borderRadius: 15,
+    padding: 20,
+    marginBottom: 25,
+  },
+  label: { color: '#BFEFFF', fontSize: 14, marginBottom: 5 },
+  valor: { color: '#EFFFFF', fontSize: 18, fontWeight: 'bold', marginBottom: 15 },
   botaoEditar: {
-    backgroundColor: '#007AFF',
+    flexDirection: 'row',
+    backgroundColor: 'rgba(0,150,255,0.6)',
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
+    justifyContent: 'center',
     marginBottom: 10,
+    gap: 8,
   },
   botaoSenha: {
-    backgroundColor: '#32CD32',
+    flexDirection: 'row',
+    backgroundColor: 'rgba(0,200,150,0.6)',
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
+    justifyContent: 'center',
     marginBottom: 15,
+    gap: 8,
   },
-  textoBotao: { color: '#fff', fontWeight: 'bold', fontSize: 18 },
+  textoBotao: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
   botaoLogout: {
-    backgroundColor: '#f5f5f5',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderColor: 'rgba(255,255,255,0.3)',
+    borderWidth: 1,
     padding: 15,
     borderRadius: 10,
-    alignItems: 'center',
   },
-  textoLogout: { color: '#FF6347', fontWeight: 'bold', fontSize: 16 },
+  textoLogout: { color: '#FF9A9A', fontWeight: 'bold', fontSize: 16, marginLeft: 6 },
   modalContainer: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.4)',
+    backgroundColor: 'rgba(0,0,0,0.45)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   modalConteudo: {
-    backgroundColor: '#fff',
+    backgroundColor: 'rgba(255,255,255,0.95)',
     width: '85%',
     padding: 20,
     borderRadius: 15,
   },
-  modalTitulo: { fontSize: 20, fontWeight: 'bold', color: '#000', marginBottom: 20 },
-  campoLabel: { fontSize: 14, color: '#666', marginBottom: 5 },
+  modalTitulo: {
+    color: '#004C70',
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 15,
+  },
   input: {
     backgroundColor: '#f2f2f2',
     borderRadius: 8,
@@ -278,6 +319,11 @@ const styles = StyleSheet.create({
   },
   textoSalvar: { color: '#fff', fontWeight: 'bold' },
   botaoCancelar: { alignItems: 'center' },
-  textoCancelar: { color: '#777' },
-  loadingText: { color: '#666', fontSize: 16, textAlign: 'center', marginTop: 40 },
+  textoCancelar: { color: '#555' },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: { color: '#fff', fontSize: 16 },
 });

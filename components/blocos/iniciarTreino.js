@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert, Vibration } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Alert, Vibration, ImageBackground } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function IniciarTreinoScreen({ route, navigation }) {
@@ -93,118 +93,138 @@ export default function IniciarTreinoScreen({ route, navigation }) {
 
   if (treinoFinalizado) {
     return (
-      <View style={styles.containerCentro}>
-        <Text style={styles.tituloFim}>Treino Concluído!</Text>
-        <Text style={styles.subtituloFim}>Parabéns por completar o treino!</Text>
-        <TouchableOpacity style={styles.botaoFinalizar} onPress={finalizarTreino}>
-          <Text style={styles.textoBotao}>Voltar aos Treinos</Text>
-        </TouchableOpacity>
-      </View>
+      <ImageBackground
+        source={require('../../assets/pesos.jpeg')}
+        style={styles.background}
+        resizeMode="cover"
+      >
+        <View style={styles.overlay}>
+          <View style={styles.containerCentro}>
+            <Text style={styles.tituloFim}>Treino Concluído!</Text>
+            <Text style={styles.subtituloFim}>Parabéns por completar o treino!</Text>
+            <TouchableOpacity style={styles.botaoFinalizar} onPress={finalizarTreino}>
+              <Text style={styles.textoBotao}>Voltar aos Treinos</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ImageBackground>
     );
   }
 
   const exercicio = exercicios[exercicioAtual];
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.tituloTreino}>{treinoNome}</Text>
-      <Text style={styles.progressoExercicio}>
-        Exercício {exercicioAtual + 1} de {exercicios.length}
-      </Text>
+    <ImageBackground
+      source={require('../../assets/pesos.jpeg')}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <View style={styles.overlay}>
+        <Text style={styles.tituloTreino}>{treinoNome}</Text>
+        <Text style={styles.progressoExercicio}>
+          Exercício {exercicioAtual + 1} de {exercicios.length}
+        </Text>
 
-      {emDescanso ? (
-        <View style={styles.descansoContainer}>
-          <Text style={styles.descansoTitulo}>Descanso</Text>
-          <Text style={styles.cronometro}>{formatarTempo(tempoRestante)}</Text>
-          <Text style={styles.proximoTexto}>
-            Próximo:{' '}
-            {exercicioAtual < exercicios.length - 1
-              ? exercicios[exercicioAtual + 1].nome
-              : 'Fim do treino'}
-          </Text>
-          <TouchableOpacity style={styles.botaoPular} onPress={pularDescanso}>
-            <Text style={styles.textoBotao}>Pular Descanso</Text>
-          </TouchableOpacity>
-        </View>
-      ) : (
-        <View style={styles.exercicioContainer}>
-          <Text style={styles.nomeExercicio}>{exercicio.nome}</Text>
-          <View style={styles.infoContainer}>
-            <Text style={styles.serieInfo}>
-              Série {serieAtual} de {exercicio.series}
+        {emDescanso ? (
+          <View style={styles.descansoContainer}>
+            <Text style={styles.descansoTitulo}>Descanso</Text>
+            <Text style={styles.cronometro}>{formatarTempo(tempoRestante)}</Text>
+            <Text style={styles.proximoTexto}>
+              Próximo:{' '}
+              {exercicioAtual < exercicios.length - 1
+                ? exercicios[exercicioAtual + 1].nome
+                : 'Fim do treino'}
             </Text>
-            <Text style={styles.repeticoesInfo}>
-              {exercicio.repeticoes} repetições
-            </Text>
+            <TouchableOpacity style={styles.botaoPular} onPress={pularDescanso}>
+              <Text style={styles.textoBotao}>Pular Descanso</Text>
+            </TouchableOpacity>
           </View>
-
-          <View style={styles.infoDescanso}>
-            <Text style={styles.textoDescanso}>
-              Descanso por série: {exercicio.descansoSeries}s
-            </Text>
-            {exercicioAtual < exercicios.length - 1 && (
-              <Text style={styles.textoDescanso}>
-                Descanso entre exercícios: {exercicio.descansoExercicios}s
+        ) : (
+          <View style={styles.exercicioContainer}>
+            <Text style={styles.nomeExercicio}>{exercicio.nome}</Text>
+            <View style={styles.infoContainer}>
+              <Text style={styles.serieInfo}>
+                Série {serieAtual} de {exercicio.series}
               </Text>
-            )}
+              <Text style={styles.repeticoesInfo}>
+                {exercicio.repeticoes} repetições
+              </Text>
+            </View>
+
+            <View style={styles.infoDescanso}>
+              <Text style={styles.textoDescanso}>
+                Descanso por série: {exercicio.descansoSeries}s
+              </Text>
+              {exercicioAtual < exercicios.length - 1 && (
+                <Text style={styles.textoDescanso}>
+                  Descanso entre exercícios: {exercicio.descansoExercicios}s
+                </Text>
+              )}
+            </View>
+
+            <TouchableOpacity style={styles.botaoConcluir} onPress={concluirSerie}>
+              <Text style={styles.textoBotao}>✓ Concluir Série</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.botaoCancelar}
+              onPress={() =>
+                Alert.alert('Cancelar Treino', 'Deseja realmente sair do treino?', [
+                  { text: 'Não' },
+                  { text: 'Sim', onPress: () => navigation.goBack() },
+                ])
+              }
+            >
+              <Text style={styles.textoCancelar}>Cancelar Treino</Text>
+            </TouchableOpacity>
           </View>
-
-          <TouchableOpacity style={styles.botaoConcluir} onPress={concluirSerie}>
-            <Text style={styles.textoBotao}>✓ Concluir Série</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.botaoCancelar}
-            onPress={() =>
-              Alert.alert('Cancelar Treino', 'Deseja realmente sair do treino?', [
-                { text: 'Não' },
-                { text: 'Sim', onPress: () => navigation.goBack() },
-              ])
-            }
-          >
-            <Text style={styles.textoCancelar}>Cancelar Treino</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-    </View>
+        )}
+      </View>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  background: {
     flex: 1,
-    backgroundColor: '#fff',
+    width: '100%',
+    height: '100%',
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.6)',
     padding: 20,
+    justifyContent: 'center',
   },
   loadingContainer: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#121212',
     justifyContent: 'center',
     alignItems: 'center',
   },
   loadingText: {
-    color: '#000',
+    color: '#ddd',
     fontSize: 18,
   },
   tituloTreino: {
-    color: '#000',
+    color: '#E0E0E0',
     fontSize: 26,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 10,
   },
   progressoExercicio: {
-    color: '#aaa',
+    color: '#999',
     fontSize: 16,
     textAlign: 'center',
     marginBottom: 30,
   },
   exercicioContainer: {
-    flex: 1,
     justifyContent: 'center',
+    alignItems: 'center',
   },
   nomeExercicio: {
-    color: '#32CD32',
+    color: '#B0FFB0',
     fontSize: 32,
     fontWeight: 'bold',
     textAlign: 'center',
@@ -215,59 +235,60 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   serieInfo: {
-    color: '#000',
+    color: '#E0E0E0',
     fontSize: 22,
     fontWeight: 'bold',
   },
   repeticoesInfo: {
-    color: '#777',
+    color: '#999',
     fontSize: 18,
   },
   infoDescanso: {
-    backgroundColor: '#1E1E1E',
+    backgroundColor: 'rgba(30,30,30,0.8)',
     padding: 15,
-    borderRadius: 10,
+    borderRadius: 15,
     marginBottom: 40,
+    width: '90%',
   },
   textoDescanso: {
-    color: '#fff',
+    color: '#E0E0E0',
     fontSize: 15,
     textAlign: 'center',
   },
   descansoContainer: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
   descansoTitulo: {
-    color: '#32CD32',
+    color: '#B0FFB0',
     fontSize: 28,
     fontWeight: 'bold',
     marginBottom: 20,
   },
   cronometro: {
-    color: '#32CD32',
+    color: '#B0FFB0',
     fontSize: 70,
     fontWeight: 'bold',
     marginBottom: 30,
   },
   proximoTexto: {
-    color: '#aaa',
+    color: '#AAA',
     fontSize: 18,
     textAlign: 'center',
     marginBottom: 30,
   },
   botaoConcluir: {
-    backgroundColor: '#32CD32',
+    backgroundColor: 'rgba(50,205,50,0.8)',
     padding: 18,
-    borderRadius: 10,
+    borderRadius: 15,
     alignItems: 'center',
     marginBottom: 15,
+    width: '85%',
   },
   botaoPular: {
-    backgroundColor: '#1E90FF',
+    backgroundColor: 'rgba(70,130,180,0.8)',
     padding: 18,
-    borderRadius: 10,
+    borderRadius: 15,
     alignItems: 'center',
     width: '80%',
   },
@@ -281,32 +302,31 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   textoCancelar: {
-    color: '#FF6347',
+    color: '#FF7F7F',
     fontSize: 16,
   },
   containerCentro: {
     flex: 1,
-    backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
   },
   tituloFim: {
-    color: '#32CD32',
+    color: '#B0FFB0',
     fontSize: 32,
     fontWeight: 'bold',
     marginBottom: 20,
   },
   subtituloFim: {
-    color: '#777',
+    color: '#CCC',
     fontSize: 18,
     marginBottom: 40,
     textAlign: 'center',
   },
   botaoFinalizar: {
-    backgroundColor: '#32CD32',
+    backgroundColor: 'rgba(50,205,50,0.8)',
     padding: 20,
-    borderRadius: 10,
+    borderRadius: 15,
     width: '80%',
     alignItems: 'center',
   },

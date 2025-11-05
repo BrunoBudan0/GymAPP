@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, TextInput, Modal, Alert, ScrollView } from 'react-native';
+import { ImageBackground ,View, Text, FlatList, TouchableOpacity, StyleSheet, TextInput, Modal, Alert, ScrollView } from 'react-native';
+import { Feather } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ExecucaoTreinoScreen({ route, navigation }) {
@@ -59,7 +60,6 @@ export default function ExecucaoTreinoScreen({ route, navigation }) {
       descansoExercicios: parseInt(descansoExercicios)
     };
 
-
     let listaAtualizada;
     if (editando !== null) {
       listaAtualizada = exercicios.map((ex, i) =>
@@ -98,191 +98,201 @@ export default function ExecucaoTreinoScreen({ route, navigation }) {
   const editarExercicio = (index) => {
     const ex = exercicios[index];
     setNomeExercicio(ex.nome);
-    setSeries(ex.series);
-    setRepeticoes(ex.repeticoes);
-    setDescansoSeries(ex.descansoSeries);
-    setDescansoExercicios(ex.descansoExercicios);
+    setSeries(ex.series.toString());
+    setRepeticoes(ex.repeticoes.toString());
+    setDescansoSeries(ex.descansoSeries.toString());
+    setDescansoExercicios(ex.descansoExercicios.toString());
     setEditando(index);
     setModalVisible(true);
   };
   
   const iniciarTreino = () => {
-  if (exercicios.length === 0) {
-    Alert.alert('Aviso', 'Este treino ainda não possui exercícios.');
-    return;
-  }
-
-  navigation.navigate('iniciarTreino', {
-    treinoIndex,
-    treinoNome
-  });
-};
+    if (exercicios.length === 0) {
+      Alert.alert('Aviso', 'Este treino ainda não possui exercícios.');
+      return;
+    }
+    navigation.navigate('iniciarTreino', { treinoIndex, treinoNome });
+  };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.titulo}>{treinoNome}</Text>
+    <ImageBackground source={require('../../assets/treinos.jpeg')} style={styles.background}>
+      <View style={styles.container}>
+        <Text style={styles.titulo}>{treinoNome}</Text>
 
-      <FlatList
-        data={exercicios}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item, index }) => (
-          <View style={styles.exercicioItem}>
-            <View style={styles.exercicioInfo}>
-              <Text style={styles.nomeExercicio}>{item.nome}</Text>
-              <Text style={styles.detalhes}>
-                {item.series}x{item.repeticoes} • Desc. séries: {item.descansoSeries}s • Desc. exercício: {item.descansoExercicios}s
-              </Text>
-            </View>
+        <FlatList
+          data={exercicios}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item, index }) => (
+            <View style={styles.exercicioItem}>
+              <View style={styles.exercicioInfo}>
+                <Text style={styles.nomeExercicio}>{item.nome}</Text>
+                <Text style={styles.detalhes}>
+                  {item.series}x{item.repeticoes} • Desc. séries: {item.descansoSeries}s • Desc. exercício: {item.descansoExercicios}s
+                </Text>
+              </View>
 
-            <View style={styles.acoes}>
-              <TouchableOpacity onPress={() => editarExercicio(index)}>
-                <Text style={styles.botaoEditar}>Editar</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => excluirExercicio(index)}>
-                <Text style={styles.botaoExcluir}>Excluir</Text>
-              </TouchableOpacity>
+              <View style={styles.acoes}>
+                <TouchableOpacity onPress={() => editarTreino(index)}>
+                  <Feather name="edit-3" size={22} color="#1E90FF" style={styles.icone} />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => excluirTreino(index)}>
+                  <Feather name="trash-2" size={22} color="#FF6347" style={styles.icone} />
+                </TouchableOpacity>
+              </View>
             </View>
+          )}
+        />
+
+        <TouchableOpacity style={styles.botaoIniciar} onPress={iniciarTreino}>
+          <Text style={styles.textoBotao}>Iniciar Treino</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.botaoAdicionar} onPress={() => setModalVisible(true)}>
+          <Text style={styles.textoBotao}>+ Novo Exercício</Text>
+        </TouchableOpacity>
+
+        {/* Modal de criação */}
+        <Modal visible={modalVisible} animationType="slide" transparent>
+          <View style={styles.modalContainer}>
+            <ScrollView>
+              <View style={styles.modalConteudo}>
+                <Text style={styles.modalTitulo}>
+                  {editando !== null ? 'Editar Exercício' : 'Novo Exercício'}
+                </Text>
+
+                <TextInput
+                  placeholder="Nome do exercício"
+                  placeholderTextColor="#999"
+                  style={styles.input}
+                  value={nomeExercicio}
+                  onChangeText={setNomeExercicio}
+                />
+
+                <TextInput
+                  placeholder="Séries (ex: 3)"
+                  placeholderTextColor="#999"
+                  style={styles.input}
+                  value={series}
+                  onChangeText={setSeries}
+                  keyboardType="numeric"
+                />
+
+                <TextInput
+                  placeholder="Repetições (ex: 12)"
+                  placeholderTextColor="#999"
+                  style={styles.input}
+                  value={repeticoes}
+                  onChangeText={setRepeticoes}
+                  keyboardType="numeric"
+                />
+
+                <TextInput
+                  placeholder="Descanso entre séries (segundos)"
+                  placeholderTextColor="#999"
+                  style={styles.input}
+                  value={descansoSeries}
+                  onChangeText={setDescansoSeries}
+                  keyboardType="numeric"
+                />
+
+                <TextInput
+                  placeholder="Descanso após exercício (segundos)"
+                  placeholderTextColor="#999"
+                  style={styles.input}
+                  value={descansoExercicios}
+                  onChangeText={setDescansoExercicios}
+                  keyboardType="numeric"
+                />
+
+                <TouchableOpacity style={styles.botaoSalvar} onPress={adicionarExercicio}>
+                  <Text style={styles.textoSalvar}>Salvar</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.botaoCancelar}
+                  onPress={() => {
+                    setModalVisible(false);
+                    setNomeExercicio('');
+                    setSeries('');
+                    setRepeticoes('');
+                    setDescansoSeries('');
+                    setDescansoExercicios('');
+                    setEditando(null);
+                  }}
+                >
+                  <Text style={styles.textoCancelar}>Cancelar</Text>
+                </TouchableOpacity>
+              </View>
+            </ScrollView>
           </View>
-        )}
-      />
-
-      <TouchableOpacity
-        style={styles.botaoIniciar}
-        onPress={iniciarTreino}
-      >
-        <Text style={styles.textoBotaoAdicionar}>Iniciar Treino</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.botaoAdicionar}
-        onPress={() => setModalVisible(true)}
-      >
-        <Text style={styles.textoBotaoAdicionar}>+ Novo Exercício</Text>
-      </TouchableOpacity>
-
-      <Modal visible={modalVisible} animationType="slide" transparent>
-        <View style={styles.modalContainer}>
-          <ScrollView>
-            <View style={styles.modalConteudo}>
-              <Text style={styles.modalTitulo}>
-                {editando !== null ? 'Editar Exercício' : 'Novo Exercício'}
-              </Text>
-
-              <TextInput
-                placeholder="Nome do exercício"
-                placeholderTextColor="#aaa"
-                style={styles.input}
-                value={nomeExercicio}
-                onChangeText={setNomeExercicio}
-              />
-
-              <TextInput
-                placeholder="Séries (ex: 3)"
-                placeholderTextColor="#aaa"
-                style={styles.input}
-                value={series}
-                onChangeText={setSeries}
-                keyboardType="numeric"
-              />
-
-              <TextInput
-                placeholder="Repetições (ex: 12)"
-                placeholderTextColor="#aaa"
-                style={styles.input}
-                value={repeticoes}
-                onChangeText={setRepeticoes}
-                keyboardType="numeric"
-              />
-
-              <TextInput
-                placeholder="Descanso entre séries (segundos)"
-                placeholderTextColor="#aaa"
-                style={styles.input}
-                value={descansoSeries}
-                onChangeText={setDescansoSeries}
-                keyboardType="numeric"
-              />
-
-              <TextInput
-                placeholder="Descanso após exercício (segundos)"
-                placeholderTextColor="#aaa"
-                style={styles.input}
-                value={descansoExercicios}
-                onChangeText={setDescansoExercicios}
-                keyboardType="numeric"
-              />
-
-              <TouchableOpacity style={styles.botaoSalvar} onPress={adicionarExercicio}>
-                <Text style={styles.textoSalvar}>Salvar</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.botaoCancelar}
-                onPress={() => {
-                  setModalVisible(false);
-                  setNomeExercicio('');
-                  setSeries('');
-                  setRepeticoes('');
-                  setDescansoSeries('');
-                  setDescansoExercicios('');
-                  setEditando(null);
-                }}
-              >
-                <Text style={styles.textoCancelar}>Cancelar</Text>
-              </TouchableOpacity>
-            </View>
-          </ScrollView>
-        </View>
-      </Modal>
-    </View>
+        </Modal>
+      </View>
+     </ImageBackground> 
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff', padding: 20 },
-  titulo: { color: '#000', fontSize: 24, fontWeight: 'bold', marginBottom: 20 },
-  
+  background : {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  container: { 
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingVertical: 40,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+  },
+  titulo: { 
+    color: '#EAEAEA', 
+    fontSize: 24, 
+    fontWeight: 'bold', 
+    marginBottom: 20 
+  },
+
   exercicioItem: {
-    backgroundColor: '#1C1C1C',
+    backgroundColor: '#2C2C2C',
     padding: 15,
     borderRadius: 10,
     marginBottom: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  exercicioInfo: {
-    flex: 1,
-  },
+  exercicioInfo: { flex: 1 },
   nomeExercicio: { 
-    color: '#fff', 
+    color: '#FFF', 
     fontSize: 18,
     marginBottom: 5
   },
   detalhes: { 
-    color: '#aaa', 
-    fontSize: 14
+    color: '#AAA', 
+    fontSize: 14 
   },
-  acoes: { 
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  botaoEditar: { color: '#1E90FF', marginRight: 15 },
-  botaoExcluir: { color: '#FF6347' },
+  acoes: { flexDirection: 'column', justifyContent: 'space-between' },
   
   botaoIniciar:{
-    backgroundColor: '#1E90FF',
-    padding: 15,
+    backgroundColor: 'rgba(30,144,255,0.8)',
+    padding: 10,
     borderRadius: 10,
     alignItems: 'center',
     marginTop: 20,
   },
   botaoAdicionar: {
-    backgroundColor: '#32CD32',
+    backgroundColor: 'rgba(100,100,100,0.4)',
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 10,
+    marginBottom: 30,
+    borderWidth: 1,
+    borderColor: '#1E90FF',
   },
-  textoBotaoAdicionar: { color: '#fff', fontWeight: 'bold', fontSize: 18 },
+  textoBotao: { 
+    color: '#FFF', 
+    fontWeight: 'bold', 
+    fontSize: 18 
+  },
 
   modalContainer: {
     flex: 1,
@@ -291,29 +301,29 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.6)',
   },
   modalConteudo: {
-    width: '100%',
-    backgroundColor: '#1C1C1C',
+    width: '90%',
+    backgroundColor: '#1E1E1E',
     padding: 20,
     borderRadius: 15,
     marginVertical: 50,
   },
-  modalTitulo: { color: '#fff', fontSize: 20, marginBottom: 15 },
+  modalTitulo: { color: '#FFF', fontSize: 20, marginBottom: 15 },
   input: {
-    backgroundColor: '#333',
-    color: '#fff',
+    backgroundColor: '#2C2C2C',
+    color: '#FFF',
     borderRadius: 8,
     paddingHorizontal: 10,
     paddingVertical: 8,
     marginBottom: 15,
   },
   botaoSalvar: {
-    backgroundColor: '#32CD32',
+    backgroundColor: '#1E90FF',
     padding: 10,
     borderRadius: 8,
     alignItems: 'center',
     marginBottom: 10,
   },
-  textoSalvar: { color: '#fff', fontWeight: 'bold' },
+  textoSalvar: { color: '#FFF', fontWeight: 'bold' },
   botaoCancelar: { alignItems: 'center' },
-  textoCancelar: { color: '#aaa' },
+  textoCancelar: { color: '#AAA' },
 });

@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { ImageBackground, View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import firebase from '../config/config';
 
 export default class HomeScreen extends React.Component {
@@ -14,107 +15,158 @@ export default class HomeScreen extends React.Component {
   componentDidMount() {
     const user = firebase.auth().currentUser;
     if (user) {
-      firebase.database().ref('usuarios/' + user.uid).once('value').then(snapshot => {
-        const nome = snapshot.val()?.nome || '';
-        this.setState({ nome });
+      this.setState({
+        nome: user.displayName || '',
+        email: user.email || '',
       });
     }
   }
 
+
   render() {
     return (
-      <ScrollView style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.nomeUsuario}>{this.state.nome}</Text>
-        </View>
+      <View style={{ flex: 1 }}>
+        <ImageBackground
+          source={require('../assets/background.jpeg')}
+          style={styles.background}
+          resizeMode="cover"
+        >
+          {/* Camada escura para contraste */}
+          <View style={styles.overlay}>
+            <ScrollView 
+              contentContainerStyle={styles.scrollContent}
+              showsVerticalScrollIndicator={false}
+            >
+              {/* Cabeçalho */}
+              <View style={styles.header}>
+                <Text style={styles.saudacao}>Bem-vindo,</Text>
+                <Text style={styles.nomeUsuario}>{this.state.nome}</Text>
+              </View>
 
-        {/* Grid principal */}
-        <View style={styles.gridContainer}>
-          <TouchableOpacity style={[styles.bloco, styles.blocoTreino]} onPress={()=> this.props.navigation.navigate('Treino')}>
-            <Text style={styles.textoBloco}>Treino</Text>
-          </TouchableOpacity>
+              {/* Grid principal */}
+              <View style={styles.gridContainer}>
+                {/* Bloco grande - Treino */}
+                <TouchableOpacity 
+                  style={[styles.bloco, styles.blocoTreino]} 
+                  onPress={() => this.props.navigation.navigate('Treino')}
+                >
+                  <Feather name="activity" size={40} color="#fff" />
+                  <Text style={styles.textoBloco}>Treino</Text>
+                </TouchableOpacity>
 
-          {/* Blocos em duas colunas */}
-          <View style={styles.linhaInferior}>
-            <TouchableOpacity style={[styles.bloco, styles.blocoHidratacao]} onPress={()=> this.props.navigation.navigate('Hidratacao')}>
-              <Text style={styles.textoBloco}>Hidratação</Text>
-            </TouchableOpacity>
+                {/* Linha inferior */}
+                <View style={styles.linhaInferior}>
+                  {/* Hidratação */}
+                  <TouchableOpacity 
+                    style={[styles.bloco, styles.blocoHidratacao]} 
+                    onPress={() => this.props.navigation.navigate('Hidratacao')}
+                  >
+                    <Feather name="droplet" size={36} color="#fff" />
+                    <Text style={styles.textoBloco}>Hidratação</Text>
+                  </TouchableOpacity>
 
-            {/* Coluna da direita */}
-            <View style={styles.colunaDireita}>
-              <TouchableOpacity style={[styles.bloco, styles.blocoAlimentacao]} onPress={()=> this.props.navigation.navigate('Alimentacao')}>
-                <Text style={styles.textoBloco}>Alimentação</Text>
-              </TouchableOpacity>
+                  {/* Coluna da direita */}
+                  <View style={styles.colunaDireita}>
+                    {/* Alimentação */}
+                    <TouchableOpacity 
+                      style={[styles.bloco, styles.blocoAlimentacao]} 
+                      onPress={() => this.props.navigation.navigate('Alimentacao')}
+                    >
+                      <Feather name="coffee" size={36} color="#fff" />
+                      <Text style={styles.textoBloco}>Alimentação</Text>
+                    </TouchableOpacity>
 
-              <TouchableOpacity style={[styles.bloco, styles.blocoProgresso]} onPress={()=> this.props.navigation.navigate('Perfil')}>
-                <Text style={styles.textoBloco}>Perfil</Text>
-              </TouchableOpacity>
-            </View>
+                    {/* Perfil */}
+                    <TouchableOpacity 
+                      style={[styles.bloco, styles.blocoPerfil]} 
+                      onPress={() => this.props.navigation.navigate('Perfil')}
+                    >
+                      <Feather name="user" size={36} color="#fff" />
+                      <Text style={styles.textoBloco}>Perfil</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            </ScrollView>
           </View>
-        </View>
-      </ScrollView>
+        </ImageBackground>
+      </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
+  background: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    width: '100%',
+    height: '100%',
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)', // Escurece o fundo
+  },
+  scrollContent: {
+    flexGrow: 1,
     paddingHorizontal: 20,
+    paddingVertical: 45,
+    height: '100%',
   },
   header: {
-    marginTop: 50,
-    marginBottom: 30,
+    marginBottom: 20,
+  },
+  saudacao: {
+    color: '#B3B3B3',
+    fontSize: 18,
   },
   nomeUsuario: {
-    color: '#fff',
-    fontSize: 24,
+    color: '#FFFFFF',
+    fontSize: 28,
     fontWeight: 'bold',
   },
   gridContainer: {
     flex: 1,
+    height: '100%',
   },
   linhaInferior: {
+    height:'100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   colunaDireita: {
     width: '47%',
-    justifyContent: 'space-between',
+    justifyContent: 'space-betwen',
   },
   bloco: {
-    borderRadius: 15,
+    borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#000',
-    shadowOpacity: 0.3,
-    shadowOffset: { width: 2, height: 4 },
-    elevation: 5,
+    shadowOpacity: 0.4,
+    shadowOffset: { width: 2, height: 5 },
+    elevation: 8,
     marginBottom: 15,
+    backgroundColor: 'rgba(60, 60, 60, 0.8)', // cinza translúcido
+    paddingVertical: 20,
   },
   textoBloco: {
-    color: '#fff',
+    color: '#FFFFFF',
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: '600',
+    letterSpacing: 0.5,
+    marginTop: 10,
   },
   blocoTreino: {
-    backgroundColor: '#1E90FF',
     width: '100%',
-    height: 130,
-    marginBottom: 15,
+    height: '25%',
   },
   blocoHidratacao: {
-    backgroundColor: '#00CED1',
     width: '47%',
-    height: 280, // ocupa o espaço de dois blocos
+    height: '65%',
   },
   blocoAlimentacao: {
-    backgroundColor: '#32CD32',
-    height: 130,
+    height: '32%',
   },
-  blocoProgresso: {
-    backgroundColor: '#FF6347',
-    height: 130,
+  blocoPerfil: {
+    height: '31%',
   },
 });

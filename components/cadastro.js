@@ -1,125 +1,155 @@
 import * as React from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { createStackNavigator } from '@react-navigation/stack';
-import firebase from '../config/config'
+import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet, ImageBackground } from 'react-native';
+import firebase from '../config/config';
 
 export default class CadastroScreen extends React.Component {
-  constructor(props){
+  constructor(props) {
     super(props);
-    this.state={
-      nome: undefined,
-      user: undefined,
-      senha: undefined,
-    }
+    this.state = {
+      nome: '',
+      user: '',
+      senha: '',
+    };
   }
 
-  gravar(){
+  gravar() {
     const email = this.state.user;
     const senha = this.state.senha;
 
-    firebase.auth().createUserWithEmailAndPassword(email, senha).then(() => {
+    firebase.auth().createUserWithEmailAndPassword(email, senha)
+      .then(() => {
         alert('Usuário cadastrado com sucesso!');
         this.props.navigation.navigate('Main');
       })
       .catch(error => {
         const errorCode = error.code;
         if (errorCode == "auth/email-already-in-use") {
-          console.log("Esse email já está em uso");
           Alert.alert('Erro', "Esse email já está em uso");
         } else if (errorCode == "auth/weak-password") {
-          console.log("Senha fraca");
           Alert.alert('Erro', "Senha fraca, digite outra senha");
         } else if (errorCode == "auth/invalid-email") {
-          console.log("Formato do email invalido");
-          Alert.alert('Erro', "Formato do email invalido");
+          Alert.alert('Erro', "Formato do email inválido");
         } else {
-          console.log("Erro Desconhecido");
-          Alert.alert('Erro', "Ocorreu um erro" + error.message);
+          Alert.alert('Erro', "Ocorreu um erro: " + error.message);
         }
       });
   }
 
   render() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Cadastro</Text>
+      <ImageBackground
+        source={require('../assets/FundoCadastro.jpg')}
+        style={styles.background}
+        resizeMode="cover"
+      >
+        <View style={styles.overlay}>
+          <View style={styles.container}>
+            <Text style={styles.title}>Cadastro</Text>
+            <Text style={styles.subtitle}>Crie sua conta para começar</Text>
 
-        <TextInput
-          style={styles.input}
-          placeholder="Nome"
-          value={this.state.nome}
-          onChangeText={(text) => this.setState({ nome: text })}
-        />
+            <Text style={styles.label}>Nome</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Digite seu nome"
+              placeholderTextColor="#ccc"
+              value={this.state.nome}
+              onChangeText={(text) => this.setState({ nome: text })}
+            />
 
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          value={this.state.user}
-          onChangeText={(text) => this.setState({ user: text })}
-          keyboardType="email-address"
-          autoCapitalize="none"
-        />
+            <Text style={styles.label}>Email</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Digite seu email"
+              placeholderTextColor="#ccc"
+              value={this.state.user}
+              onChangeText={(text) => this.setState({ user: text })}
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
 
-        <TextInput
-          style={styles.input}
-          placeholder="Senha"
-          value={this.state.senha}
-          onChangeText={(text) => this.setState({ senha: text })}
-          secureTextEntry
-        />
+            <Text style={styles.label}>Senha</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Digite sua senha"
+              placeholderTextColor="#ccc"
+              value={this.state.senha}
+              onChangeText={(text) => this.setState({ senha: text })}
+              secureTextEntry
+            />
 
-        <TouchableOpacity style={styles.button} onPress={() => this.gravar()}>
-          <Text style={styles.buttonText}>Cadastrar</Text>
-        </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={() => this.gravar()}>
+              <Text style={styles.buttonText}>Cadastrar</Text>
+            </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-          <Text style={styles.link}>Já tem conta? Faça login</Text>
-        </TouchableOpacity>
-      </View>
+            <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+              <Text style={styles.link}>Já tem conta? Faça login</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ImageBackground>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
+  background: {
     flex: 1,
+    width: '100%',
+    height: '100%',
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
     justifyContent: 'center',
-    padding: 20,
-    backgroundColor: '#fff'
+    alignItems: 'center',
+  },
+  container: {
+    width: '85%',
+    padding: 25,
+    borderRadius: 20,
+    backgroundColor: 'rgba(40, 40, 40, 0.8)',
   },
   title: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: 'bold',
+    color: '#fff',
+    textAlign: 'center',
+  },
+  subtitle: {
+    color: '#bbb',
+    textAlign: 'center',
     marginBottom: 30,
-    textAlign: 'center'
+    marginTop: 5,
+  },
+  label: {
+    color: '#fff',
+    fontSize: 16,
+    marginBottom: 5,
   },
   input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    color: '#fff',
     padding: 12,
+    borderRadius: 10,
+    fontSize: 16,
     marginBottom: 15,
-    borderRadius: 8,
-    fontSize: 16
   },
   button: {
-    backgroundColor: '#007AFF',
+    backgroundColor: 'rgba(100, 100, 100, 0.7)',
     padding: 15,
-    borderRadius: 8,
-    marginTop: 10
+    borderRadius: 10,
+    marginTop: 10,
   },
   buttonText: {
     color: '#fff',
     textAlign: 'center',
-    fontSize: 16,
-    fontWeight: 'bold'
+    fontSize: 18,
+    fontWeight: 'bold',
   },
   link: {
-    color: '#007AFF',
+    color: '#aaa',
     textAlign: 'center',
     marginTop: 20,
-    fontSize: 16
-  }
+    fontSize: 16,
+  },
 });
