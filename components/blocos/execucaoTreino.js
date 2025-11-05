@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, TextInput, Modal, Alert, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function ExecucaoTreino({ route, navigation }) {
+export default function ExecucaoTreinoScreen({ route, navigation }) {
   const { treinoIndex, treinoNome } = route.params;
   const [exercicios, setExercicios] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);

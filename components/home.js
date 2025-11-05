@@ -42,12 +42,12 @@ export default class HomeScreen extends React.Component {
 
             {/* Coluna da direita */}
             <View style={styles.colunaDireita}>
-              <TouchableOpacity style={[styles.bloco, styles.blocoAlimentacao]}>
+              <TouchableOpacity style={[styles.bloco, styles.blocoAlimentacao]} onPress={()=> this.props.navigation.navigate('Alimentacao')}>
                 <Text style={styles.textoBloco}>Alimentação</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={[styles.bloco, styles.blocoProgresso]}>
-                <Text style={styles.textoBloco}>Progresso</Text>
+              <TouchableOpacity style={[styles.bloco, styles.blocoProgresso]} onPress={()=> this.props.navigation.navigate('Perfil')}>
+                <Text style={styles.textoBloco}>Perfil</Text>
               </TouchableOpacity>
             </View>
           </View>
