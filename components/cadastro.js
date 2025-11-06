@@ -13,27 +13,50 @@ export default class CadastroScreen extends React.Component {
   }
 
   gravar() {
-    const email = this.state.user;
-    const senha = this.state.senha;
+  const nome = this.state.nome.trim();
+  const email = this.state.user.trim().toLowerCase();
+  const senha = this.state.senha.trim();
 
-    firebase.auth().createUserWithEmailAndPassword(email, senha)
-      .then(() => {
-        alert('Usuário cadastrado com sucesso!');
-        this.props.navigation.navigate('Main');
-      })
-      .catch(error => {
-        const errorCode = error.code;
-        if (errorCode == "auth/email-already-in-use") {
-          Alert.alert('Erro', "Esse email já está em uso");
-        } else if (errorCode == "auth/weak-password") {
-          Alert.alert('Erro', "Senha fraca, digite outra senha");
-        } else if (errorCode == "auth/invalid-email") {
-          Alert.alert('Erro', "Formato do email inválido");
-        } else {
-          Alert.alert('Erro', "Ocorreu um erro: " + error.message);
-        }
-      });
+  if (!nome || !email || !senha) {
+    Alert.alert('Erro', 'Preencha todos os campos');
+    return;
   }
+
+  firebase.auth()
+    .createUserWithEmailAndPassword(email, senha)
+    .then((userCredential) => {
+      const user = userCredential.user;
+
+      // Atualiza o nome no perfil do usuário (Auth)
+      return user.updateProfile({ displayName: nome })
+        .then(() => {
+          // Salva dados adicionais no Realtime Database
+          return firebase.database().ref(`users/${user.uid}`).set({
+            nome: nome,
+            email: email,
+            criadoEm: new Date().toISOString(),
+          });
+        });
+    })
+    .then(() => {
+      Alert.alert('Sucesso', 'Usuário cadastrado com sucesso!');
+      this.setState({ nome: '', user: '', senha: '' });
+      this.props.navigation.navigate('Main'); // ou 'Home', conforme seu fluxo
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+
+      if (errorCode === "auth/email-already-in-use") {
+        Alert.alert('Erro', "Esse email já está em uso");
+      } else if (errorCode === "auth/weak-password") {
+        Alert.alert('Erro', "Senha fraca, digite outra senha");
+      } else if (errorCode === "auth/invalid-email") {
+        Alert.alert('Erro', "Formato do email inválido");
+      } else {
+        Alert.alert('Erro', "Ocorreu um erro: " + error.message);
+      }
+    });
+}
 
   render() {
     return (

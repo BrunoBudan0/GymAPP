@@ -83,10 +83,7 @@ export default function PerfilScreen({ navigation }) {
       { text: 'Cancelar' },
       {
         text: 'Sair',
-        onPress: async () => {
-          await firebase.auth().signOut();
-          navigation.replace('Login');
-        },
+        onPress: () => navigation.navigate('Auth'),
       },
     ]);
   };
