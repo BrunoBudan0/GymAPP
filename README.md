@@ -56,6 +56,9 @@ Fornecer uma ferramenta simples e eficiente para que o usuário gerencie sua rot
 
 ## 🎥 Demonstração
 
+[![Assista à demonstração do GymApp](https://img.youtube.com/vi/kWyLGr0sJjI/0.jpg)](https://www.youtube.com/watch?v=kWyLGr0sJjI)
+
+
 Você pode acessar o app diretamente pelo Expo Snack:  
 👉 [**Abrir GymApp no Expo Snack**](https://snack.expo.dev/@brunobudano/gym-app)
 
