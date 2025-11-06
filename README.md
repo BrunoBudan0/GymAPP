@@ -89,11 +89,11 @@ Durante o desenvolvimento do **GymApp**, foi possível aprender e aplicar:
 
 | Tela | Preview |
 |------|----------|
-| 🏠 **Home** | ![Home](./fotosApp/home.png) |
-| 🏋️ **Treinos** | ![Treinos](./fotosApp/treino.png) |
-| 💧 **Hidratação** | ![Hidratação](./fotosApp/hidratacao.png) |
-| 🍎 **Alimentação** | ![Alimentação](./fotosApp/alimentacao.png) |
-| 👤 **Perfil** | ![Perfil](./fotosApp/perfil.png) |
+| 🏠 **Home** | <img src="./fotosApp/home.png" width="250"/> |
+| 🏋️ **Treinos** | <img src="./fotosApp/treino.png" width="250"/> |
+| 💧 **Hidratação** | <img src="./fotosApp/hidratacao.png" width="250"/> |
+| 🍎 **Alimentação** | <img src="./fotosApp/alimentacao.png" width="250"/> |
+| 👤 **Perfil** | <img src="./fotosApp/perfil.png" width="250"/> |
 
 ---
 
