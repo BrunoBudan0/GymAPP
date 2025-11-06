@@ -10,7 +10,7 @@ Fornecer uma ferramenta simples e eficiente para que o usuário gerencie sua rot
 
 ### 🧩 Requisitos Atendidos
 - Interface moderna e adaptada para dispositivos móveis.  
-- Armazenamento de dados com **Firebase** e **AsyncStorage**.  
+- Armazenamento de dados com **Firebase**(usuário) e **AsyncStorage**(Funcionalidades da Home).  
 - Sistema de treinos completo com séries, repetições e tempos de descanso.  
 - Controle de hidratação com meta diária.  
 - Registro de alimentação diária.  
@@ -27,7 +27,7 @@ Fornecer uma ferramenta simples e eficiente para que o usuário gerencie sua rot
 | **Banco de Dados** | Firebase |
 | **Armazenamento Local** | AsyncStorage |
 | **Bibliotecas** | React Navigation, React Hooks (useState, useEffect) |
-| **Interface** | StyleSheet, TouchableOpacity, Modal, FlatList |
+| **Interface** | StyleSheet, TouchableOpacity, Modal, FlatList, AnimatedCircularProgress |
 
 ---
 
@@ -49,7 +49,7 @@ Fornecer uma ferramenta simples e eficiente para que o usuário gerencie sua rot
 - Design limpo e intuitivo, focado na praticidade.  
 
 ### 👤 Perfil
-- Visualização dos dados do usuário e resumo de desempenho.  
+- Visualização dos dados do usuário.  
 - Interface integrada e coerente com o estilo do app.  
 
 ---
@@ -63,13 +63,12 @@ Você pode acessar o app diretamente pelo Expo Snack:
 👉 [**Abrir GymApp no Expo Snack**](https://snack.expo.dev/@brunobudano/gym-app)
 
 📱 Para testar:
-1. Acesse o link acima.  
-2. Clique em **"Run"** no canto superior direito.  
-3. Escolha entre:
+1. Acesse o link acima.    
+2. Escolha entre:
    - **Web:** O app abrirá em uma nova aba.  
    - **My Device (Recomendado):** Baixe o app **Expo Go** no celular e escaneie o **QR Code** exibido.  
 
-> 💡 Algumas funcionalidades, como vibração e timers de treino, funcionam melhor no dispositivo físico.
+> 💡 Algumas funcionalidades, como vibração, timers de treino e alerts, funcionam melhor no dispositivo físico.
 
 ---
 
@@ -100,7 +99,7 @@ Durante o desenvolvimento do **GymApp**, foi possível aprender e aplicar:
 
 ---
 
-## ✨ Desenvolvido por
+## Desenvolvido por
 
 **Bruno Budano Mello**  
 📍 Projeto acadêmico desenvolvido no ambiente **Expo Snack**.  
