@@ -57,7 +57,7 @@ Fornecer uma ferramenta simples e eficiente para que o usuário gerencie sua rot
 ## 🎥 Demonstração
 
 Você pode acessar o app diretamente pelo Expo Snack:  
-👉 [**Abrir GymApp no Expo Snack**]((https://snack.expo.dev/@brunobudano/gym-app))   
+👉 [**Abrir GymApp no Expo Snack**](https://snack.expo.dev/@brunobudano/gym-app)
 
 📱 Para testar:
 1. Acesse o link acima.  
@@ -89,11 +89,11 @@ Durante o desenvolvimento do **GymApp**, foi possível aprender e aplicar:
 
 | Tela | Preview |
 |------|----------|
-| 🏠 **Home** | *./fotosApp/home.png* |
-| 🏋️ **Treinos** | *./fotosApp/treino.png* |
-| 💧 **Hidratação** | *./fotosApp/hidratacao.png* |
-| 🍎 **Alimentação** | *./fotosApp/alimentacao.png* |
-| 👤 **Perfil** | *./fotosApp/perfil.png* |
+| 🏠 **Home** | ![Home](./fotosApp/home.png) |
+| 🏋️ **Treinos** | ![Treinos](./fotosApp/treino.png) |
+| 💧 **Hidratação** | ![Hidratação](./fotosApp/hidratacao.png) |
+| 🍎 **Alimentação** | ![Alimentação](./fotosApp/alimentacao.png) |
+| 👤 **Perfil** | ![Perfil](./fotosApp/perfil.png) |
 
 ---
 
