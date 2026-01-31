@@ -132,10 +132,10 @@ export default function ExecucaoTreinoScreen({ route, navigation }) {
               </View>
 
               <View style={styles.acoes}>
-                <TouchableOpacity onPress={() => editarTreino(index)}>
+                <TouchableOpacity onPress={() => editarExercicio(index)}>
                   <Feather name="edit-3" size={22} color="#1E90FF" style={styles.icone} />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => excluirTreino(index)}>
+                <TouchableOpacity onPress={() => excluirExercicio(index)}>
                   <Feather name="trash-2" size={22} color="#FF6347" style={styles.icone} />
                 </TouchableOpacity>
               </View>
