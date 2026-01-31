@@ -6,19 +6,19 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal",
-      "node": "20.18.0"
+      "distribution": "internal"
     },
     "preview": {
       "distribution": "internal",
       "android": {
         "buildType": "apk"
-      },
-      "node": "20.18.0"
+      }
     },
     "production": {
       "autoIncrement": true,
-      "node": "20.18.0"
+      "android": {
+        "buildType": "aab"
+      }
     }
   },
   "submit": {
