@@ -1,7 +1,7 @@
 import React from 'react';
 import { ImageBackground, View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
-import firebase from '../config/config';
+// import firebase from '../config/config';
 
 export default class HomeScreen extends React.Component {
   constructor(props) {
@@ -13,13 +13,10 @@ export default class HomeScreen extends React.Component {
   }
 
   componentDidMount() {
-    const user = firebase.auth().currentUser;
-    if (user) {
-      this.setState({
-        nome: user.displayName || '',
-        email: user.email || '',
-      });
-    }
+    this.setState({
+      nome: 'Bruno Budano',
+      email: 'Brunobudano@exemple.com',
+    });
   }
 
 

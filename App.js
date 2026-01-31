@@ -97,7 +97,6 @@ export default function App() {
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {/*Mudar depois para a auth para cima!!!*/} 
         {/* Auth Stack - Login e Cadastro */}
-        <Stack.Screen name="Auth" component={AuthStack} />
         {/* Main App - Após login */}
         <Stack.Screen name="Main" component={MainTabs} />
       </Stack.Navigator>
